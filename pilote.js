@@ -144,7 +144,7 @@ var timerID = setInterval(function()
                 gzb = z;
 
                 gx = (gxb-gxo)*GYRO_SENSITIVITY; 
-                gy = (gyb-gzo)*GYRO_SENSITIVITY;
+                gy = (gyb-gyo)*GYRO_SENSITIVITY;
                 gz = (gyb-gzo)*GYRO_SENSITIVITY;
                 
                 
@@ -287,14 +287,14 @@ pilote.Pid = function()
                 
 pilote.Calibration = function()
         {
-        const buf = Buffer.allocUnsafe(24);
-        buf.writeFloatBE(gxo, 0);
-        buf.writeFloatBE(gyo, 4);
-        buf.writeFloatBE(gzo, 8);
-        buf.writeFloatBE(mxo,12);
-        buf.writeFloatBE(myo,16);
-        buf.writeFloatBE(mzo,20);
-        return buf;
+        const buf = Buffer.allocUnsafe(24)
+        buf.writeFloatBE(gxo, 0)
+        buf.writeFloatBE(gyo, 4)
+        buf.writeFloatBE(gzo, 8)
+        buf.writeFloatBE(mxo,12)
+        buf.writeFloatBE(myo,16)
+        buf.writeFloatBE(mzo,20)
+        return buf
         }
         
 pilote.CalibrationSave = function(val)
@@ -303,9 +303,12 @@ pilote.CalibrationSave = function(val)
         switch (fnc)
                 {
                 case "gyro"    : console.log("Calibration Save Gyro")
-                                 store.set('gxo',gxb)
-                                 store.set('gyo',gyb)
-                                 store.set('gzo',gzb)
+                                 gxo = gxb
+                                 gyo = gyb
+                                 gzo = gzb
+                                 store.set('gxo',gxo)
+                                 store.set('gyo',gyo)
+                                 store.set('gzo',gzo)
                                  break
                 
                 case "magneto" : console.log("Calibration Save Magneto")

@@ -5,9 +5,9 @@ const PID_UUID         = 'ff19'
 const CAPTEUR_UUID     = 'ff20'
 const CALIBRATION_UUID = 'ff21'
 
-var bleno = require('bleno');
-var util  = require('util');
-var Pilote = require('./pilote');
+var bleno  = require('bleno')
+var util   = require('util')
+var Pilote = require('./pilote')
 
 var BlenoCharacteristic = bleno.Characteristic;
 var BlenoPrimaryService = bleno.PrimaryService;
@@ -19,7 +19,7 @@ var Cap = function()
 	Data.super_.call(this, 
 		{
 		uuid: CAP_UUID,
-		properties: ['read','write'],
+		properties: ['read','write']
 		});
 	};
 	
@@ -44,7 +44,7 @@ var Data = function()
 	Data.super_.call(this, 
 		{
 		uuid: DATA_UUID,
-		properties: ['read'],
+		properties: ['read']
 		});
 	};
 	
