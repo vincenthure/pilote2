@@ -4,10 +4,12 @@ const DATA_UUID        = 'ff18'
 const PID_UUID         = 'ff19'
 const CAPTEUR_UUID     = 'ff20'
 const CALIBRATION_UUID = 'ff21'
+const COMMANDE_UUID    = 'ff22'
 
-var bleno  = require('bleno')
-var util   = require('util')
-var Pilote = require('./pilote')
+var bleno   = require('bleno')
+var util    = require('util')
+var exeCute = require('exe')
+var Pilote  = require('./pilote')
 
 var BlenoCharacteristic = bleno.Characteristic;
 var BlenoPrimaryService = bleno.PrimaryService;
@@ -19,7 +21,7 @@ var Cap = function()
 	Data.super_.call(this, 
 		{
 		uuid: CAP_UUID,
-		properties: ['read','write']
+		properties: ['read']
 		});
 	};
 	
@@ -30,12 +32,6 @@ Cap.prototype.onReadRequest = function(offset, callback)
     callback(this.RESULT_SUCCESS, new Buffer(Pilote.CapGet()));
     };
 
-Cap.prototype.onWriteRequest = function(data, offset, withoutResponse, callback)
-	{
-	Pilote.CapSet(data)
-    callback(this.RESULT_SUCCESS);
-    };
-    
 
 //********************* data *******************************************************
 
@@ -81,7 +77,7 @@ var Pid = function()
 	Pid.super_.call(this, 
 		{
 		uuid: PID_UUID,
-		properties: ['read','write']
+		properties: ['read']
 		});
 	};
 	
@@ -92,12 +88,6 @@ Pid.prototype.onReadRequest = function(offset, callback)
     callback(this.RESULT_SUCCESS, new Buffer(Pilote.Pid()));
     };
 
-Pid.prototype.onWriteRequest = function(data, offset, withoutResponse, callback)
-	{
-	Pilote.PidSet(data)
-    callback(this.RESULT_SUCCESS)
-    };   
-
 //********************* CALIBRATION *******************************************************
 
 var Calibration = function() 
@@ -105,7 +95,7 @@ var Calibration = function()
 	Calibration.super_.call(this, 
 		{
 		uuid: CALIBRATION_UUID,
-		properties: ['read','write']
+		properties: ['read']
 		});
 	};
 	
@@ -115,13 +105,27 @@ Calibration.prototype.onReadRequest = function(offset, callback)
 	{
     callback(this.RESULT_SUCCESS, new Buffer(Pilote.Calibration()));
     };
+  
 
-Calibration.prototype.onWriteRequest = function(data, offset, withoutResponse, callback)
+//********************* Commande *******************************************************
+
+var Commande = function() 
 	{
-	Pilote.CalibrationSave(data)
+	Commande.super_.call(this, 
+		{
+		uuid: COMMANDE_UUID,
+		properties: ['write']
+		});
+	};
+	
+util.inherits(Commande, BlenoCharacteristic);
+
+
+Commande.prototype.onWriteRequest = function(data, offset, withoutResponse, callback)
+	{
+	Pilote.commande(data)
     callback(this.RESULT_SUCCESS)
     };   
-
 
 //*************** create Service pilote ***************************************************
 
@@ -135,7 +139,8 @@ function piloteServices()
 							new Data(),
 							new Pid(),
 							new Capteur(),
-							new Calibration()
+							new Calibration(),
+							new Commande()
 							]
 		});
 	}

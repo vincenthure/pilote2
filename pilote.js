@@ -220,23 +220,7 @@ pilote.CapGet = function()
         return buf;
         }
 
-pilote.CapSet = function(val)
-	{
-        var change = Buffer.from(val).readInt8(0);
 
-        if( change==0 )
-                {
-                cap = heading;
-                console.log("cap set to heading : "+Math.round(cap));
-                }
-        else
-                {
-                cap += change;
-                console.log("cap set to : "+Math.round(cap));
-                }
-                
-        return val;
-	};
         
 pilote.Pid = function()
         {
@@ -246,44 +230,6 @@ pilote.Pid = function()
         buf.writeFloatBE(Kd, 8);
         return buf;
         }
- 
- pilote.PidSet = function(val)
-	{
-        var fnc = Buffer.from(val).toString();
-        switch (fnc)
-                {
-                case "kp-"    : console.log("Kp -1");
-                                Kp -= 1;
-                                break;
-                                
-                case "kp+"    : console.log("Kp +1");
-                                Kp += 1;
-                                break;
- 
-                case "ki-"    : console.log("Ki -1");
-                                Ki -= 1;
-                                break;
-                                
-                case "ki+"    : console.log("Ki +1");
-                                Ki += 1;
-                                break;
-                                
-                case "kd-"    : console.log("Kd -1");
-                                Kd -= 1;
-                                break;
-                                
-                case "kd+"    : console.log("Kd +1");
-                                Kd += 1;
-                                break;
-                                
-                case "pidSave": console.log("PID SAVE");
-                                store.set('kp',Kp)
-                                store.set('ki',Ki)
-                                store.set('kd',Kd)
-                                break;               
-                }
-        return 1;
-	};
                 
 pilote.Calibration = function()
         {
@@ -296,27 +242,85 @@ pilote.Calibration = function()
         buf.writeFloatBE(mzo,20)
         return buf
         }
-        
-pilote.CalibrationSave = function(val)
+
+pilote.commande = function(value)
         {
-        var fnc = Buffer.from(val).toString()
+        var fnc = Buffer.from(value).toString();
         switch (fnc)
                 {
-                case "gyro"    : console.log("Calibration Save Gyro")
-                                 gxo = gxb
-                                 gyo = gyb
-                                 gzo = gzb
-                                 store.set('gxo',gxo)
-                                 store.set('gyo',gyo)
-                                 store.set('gzo',gzo)
-                                 break
+                case "kp-"         :    console.log("Kp -1");
+                                        Kp -= 1;
+                                        break;
+                                
+                case "kp+"         :    console.log("Kp +1");
+                                        Kp += 1;
+                                        break;
+ 
+                case "ki-"         :    console.log("Ki -1");
+                                        Ki -= 1;
+                                        break;
+                                
+                case "ki+"         :    console.log("Ki +1");
+                                        Ki += 1;
+                                        break;
+                                
+                case "kd-"         :    console.log("Kd -1");
+                                        Kd -= 1;
+                                        break;
+                                
+                case "kd+"         :    console.log("Kd +1");
+                                        Kd += 1;
+                                        break;
                 
-                case "magneto" : console.log("Calibration Save Magneto")
-                                 store.set('mxo',0)
-                                 store.set('myo',0)
-                                 store.set('mzo',0)
-                                 break
+                case "cap--"       :    console.log("cap -1");
+                                        cap -= 10;
+                                        break;
+                                
+                case "cap-"        :    console.log("cap +1");
+                                        cap -= 1;
+                                        break;
+ 
+                case "capset"      :    console.log("cap to heading");
+                                        cap = heading;
+                                        break;
+                                
+                case "cap+"        :    console.log("cap +1");
+                                        cap += 1;
+                                        break;
+                                
+                case "cap++"       :    console.log("cap +10");
+                                        cap += 10;
+                                        break;
+                
+                case 'shutdown'    :    console.log("shutdown")
+                                        exeCute("sudo shutdown now")
+                                        break
+							
+		case 'reboot'      :    console.log("reboot")
+                                        exeCute("sudo reboot")
+                                        break
+							
+		case 'pidSave'     :    console.log("Pid Save");
+                                        store.set('kp',Kp)
+                                        store.set('ki',Ki)
+                                        store.set('kd',Kd)
+                                        break
+
+		case 'gyroSave'    :    console.log("Calibration Save Gyro")
+                                        gxo = gxb
+                                        gyo = gyb
+                                        gzo = gzb
+                                        store.set('gxo',gxo)
+                                        store.set('gyo',gyo)
+                                        store.set('gzo',gzo)
+                                        break
+
+		case 'magnetoSave' :    console.log("Calibration Save Magneto")
+                                        store.set('mxo',0)
+                                        store.set('myo',0)
+                                        store.set('mzo',0)
+                                        break
                 }
-        }
+        }       
         
  module.exports = pilote;

@@ -12,7 +12,13 @@
     "ahrs": "^1.1.7",
     "async": "^2.6.1",
     "bleno": "^0.5.0",
+    "bluetooth-hci-socket": "^0.5.1",
     "data-store": "^3.1.0",
-    "i2c-bus": "^4.0.6"
+    "exe": "^1.0.2",
+    "i2c-bus": "^4.0.6",
+    "noble": "^1.9.1",
+    "node-gyp": "^3.8.0",
+    "rebuild": "^0.1.2",
+    "usb": "^1.5.0"
   }
 }
