@@ -1,29 +1,30 @@
 console.log("starting IMU")
 
-const async = require("async");
-const i2c   = require("i2c-bus");
-const AHRS  = require('ahrs');
-const Store = require('data-store');
+const async   = require("async")
+const i2c     = require("i2c-bus")
+const AHRS    = require('ahrs')
+const Store   = require('data-store')
+const exeCute = require('exe')
 
-const store = new Store({ path: '/home/pi/pilote.json' });
+const store = new Store({ path: '/home/pi/pilote.json' })
 
-const FXOS8700          = 31;  // magnetometre , accelerometre
-const MAG_WHO_I_AM      = 13;
-const MAG_XYZ_DATA_CFG  = 14;
-const MAG_CTRL_REG1     = 42;
-const MAG_CTRL_REG2     = 43;
-const MAG_MCTRL_REG1    = 91;
-const MAG_MCTRL_REG2    = 92;
+const FXOS8700          = 31  // magnetometre , accelerometre
+const MAG_WHO_I_AM      = 13
+const MAG_XYZ_DATA_CFG  = 14
+const MAG_CTRL_REG1     = 42
+const MAG_CTRL_REG2     = 43
+const MAG_MCTRL_REG1    = 91
+const MAG_MCTRL_REG2    = 92
 const MAG_SENSITIVITY   = 0.000244;    //  2G
 
-const FXAS210002        = 33;  // gyroscope
-const GYRO_WHO_I_AM     = 12;
-const GYRO_REG0         = 13;
-const GYRO_REG1         = 19;
-const GYRO_SENSITIVITY  = 0.00027270;  //  500DPS
+const FXAS210002        = 33  // gyroscope
+const GYRO_WHO_I_AM     = 12
+const GYRO_REG0         = 13
+const GYRO_REG1         = 19
+const GYRO_SENSITIVITY  = 0.00027270  //  500DPS
 
-const DATA              = 1;
-const LOOP_TIME         = 20;
+const DATA              = 1
+const LOOP_TIME         = 20
 
 
 var ahrs = new AHRS
@@ -35,9 +36,9 @@ var ahrs = new AHRS
     ki: 0
     });
 
-var i2c1  = i2c.openSync(1);
-var buff1 = new Buffer(12);
-var buff2 = new Buffer(6);
+var i2c1  = i2c.openSync(1)
+var buff1 = new Buffer(12)
+var buff2 = new Buffer(6)
 
 var x,y,z,
     ax,ay,az,
@@ -217,6 +218,7 @@ pilote.CapGet = function()
         {
         const buf = Buffer.allocUnsafe(4);
         buf.writeFloatBE(cap, 0);
+        //buf.writeFloatBE(0, 4);
         return buf;
         }
 
