@@ -94,7 +94,7 @@ var Calibration = function()
 	Calibration.super_.call(this, 
 		{
 		uuid: CALIBRATION_UUID,
-		properties: ['read']
+		properties: ['read','write']
 		});
 	};
 	
@@ -104,7 +104,12 @@ Calibration.prototype.onReadRequest = function(offset, callback)
 	{
     callback(this.RESULT_SUCCESS, new Buffer(Pilote.Calibration()));
     };
-  
+ 
+Calibration.prototype.onWriteRequest = function(data, offset, withoutResponse, callback)
+	{
+	Pilote.magnetoSave(data)
+    callback(this.RESULT_SUCCESS)
+    };   
 
 //********************* Commande *******************************************************
 

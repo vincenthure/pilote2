@@ -43,6 +43,7 @@ var buff2 = new Buffer(6)
 var x,y,z,
     ax,ay,az,
     mx,my,mz,
+    mx2,my2,mz2,
     gx,gy,gz,
     gxb,gyb,gzb,
     heading,cap,
@@ -128,6 +129,10 @@ var timerID = setInterval(function()
                 mx = x;
                 my = y;
                 mz = z;
+                
+                mx2 = mx - mxo
+                my2 = my - myo
+                mz2 = mz - mzo
                 //console.log(mx+"  "+my+"  "+mz)
             
    //******************* GYRO ******************
@@ -151,7 +156,7 @@ var timerID = setInterval(function()
                 
    //************** Madgwick Filter ************
             
-                ahrs.update(gx,gy,gz,ax,ay,az,mx,my,mz);
+                ahrs.update(gx,gy,gz,ax,ay,az,mx2,my2,mz2);
                 heading = ahrs.getEulerAngles().heading*-57.29;
            //     console.log(Math.round(heading))
                 
@@ -218,7 +223,6 @@ pilote.CapGet = function()
         {
         const buf = Buffer.allocUnsafe(4);
         buf.writeFloatBE(cap, 0);
-        //buf.writeFloatBE(0, 4);
         return buf;
         }
 
@@ -244,7 +248,16 @@ pilote.Calibration = function()
         buf.writeFloatBE(mzo,20)
         return buf
         }
-
+pilote.magnetoSave = function(buf)
+        {
+        console.log("Save magneto calibration")
+        mxo = buf.readFloatBE(0)
+        myo = buf.readFloatBE(4)
+        mzo = buf.readFloatBE(8)
+        store.set('mxo',mxo)
+        store.set('myo',myo)
+        store.set('mzo',mzo)
+        }
 pilote.commande = function(value)
         {
         var fnc = Buffer.from(value).toString();
@@ -315,12 +328,6 @@ pilote.commande = function(value)
                                         store.set('gxo',gxo)
                                         store.set('gyo',gyo)
                                         store.set('gzo',gzo)
-                                        break
-
-		case 'magnetoSave' :    console.log("Calibration Save Magneto")
-                                        store.set('mxo',0)
-                                        store.set('myo',0)
-                                        store.set('mzo',0)
                                         break
                 }
         }       
