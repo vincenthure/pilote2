@@ -8,7 +8,8 @@ const COMMANDE_UUID    = 'ff22'
 
 var bleno   = require('bleno')
 var util    = require('util')
-var Pilote  = require('./pilote')
+var pilote  = require('./pilote')
+var Pilote  = new pilote()
 
 var BlenoCharacteristic = bleno.Characteristic;
 var BlenoPrimaryService = bleno.PrimaryService;
