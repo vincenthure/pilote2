@@ -13,7 +13,7 @@ module.exports = function()
     const calibration = new CALIBRATION()
 
     const AHRS = require('ahrs')
-    const ahrs   = new AHRS
+    const ahrs = new AHRS
         ({
         sampleInterval: LOOP_TIME,
         algorithm: 'Madgwick',
@@ -31,7 +31,14 @@ module.exports = function()
         ax : 0, ay : 0, az : 0,
         gx : 0, gy : 0, gz : 0
         }
-                
+
+    const calib=   
+        {
+        gx : 0, gy : 0, gz : 0,
+        ax : 0, ay : 0, az : 0,
+        gx : 0, gy : 0, gz : 0
+        }
+
     var heading, cap=0
     var input, output
 
@@ -41,9 +48,11 @@ module.exports = function()
         {
         capteur.get(capt)
 
-        ahrs.update(capt.gx,capt.gy,capt.gz,
-                    capt.ax,capt.ay,capt.az,
-                    capt.mx,capt.my,capt.mz
+        calibration.adjust(capt,calib)
+
+        ahrs.update(calib.gx, calib.gy, calib.gz,
+                    calib.ax, calib.ay, calib.az,
+                    calib.mx, calib.my, calib.mz
                     )
 
         heading = ahrs.getEulerAngles().heading*-57.29;
@@ -55,17 +64,11 @@ module.exports = function()
 
         output = pid.update(input)
 
-        },LOOP_TIME
-        );
+        },LOOP_TIME );
 
 //************ initialise le cap au bout de 3 secondes ***************
 
-    setTimeout(function()
-        {
-        cap = heading;
-        Vi  = 0;
-        }
-        , 3000)
+    setTimeout(function(){ cap = heading; }, 3000)
 
 //***************** fonction ***************************
 
@@ -164,11 +167,8 @@ module.exports = function()
                 case 'reboot'      :    console.log("reboot")
                                         exeCute("sudo reboot")
                                         break
-							
-                case 'pidSave'     :    pid.store()
-                                        break
 
-                case 'gyroSave'    :    calibration.gyroSave(capt.gx,capt.gy,capt.gz)
+                case 'gyroSave'    :    calibration.gyroSave(capt)
                                         break
                 }
         }      

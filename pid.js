@@ -38,14 +38,6 @@ module.exports = function()
         return out
        	}
 
-    this.store = function()
-    	{
-    	console.log("Pid Save");
-        store.set('kp',Kp)
-        store.set('ki',Ki)
-       	store.set('kd',Kd)
-    	}
-
     this.get = function()
     	{
     	const buf = Buffer.allocUnsafe(12);
@@ -59,17 +51,20 @@ module.exports = function()
     	{
     	console.log("Kp "+x)
     	Kp += x	
+        store.set('kp',Kp)
     	}
 
     this.ki = function(x)
     	{
     	console.log("Ki "+x)
-    	Ki += x	
+    	Ki += x
+        store.set('ki',Ki)
     	}
 
     this.kd = function(x)
     	{
     	console.log("Kd "+x)
-    	Kd += x	
+    	Kd += x
+        store.set('kd',Kd)	
     	}
     }
