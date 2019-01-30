@@ -61,46 +61,45 @@ module.exports = function()
 
    //****************  ACCELEROMETRE *****************
 
-                x = ((buff1[0] << 8) | buff1[1])>>2;
-                y = ((buff1[2] << 8) | buff1[3])>>2;
-                z = ((buff1[4] << 8) | buff1[5])>>2;
+                x = ((buff1[0] << 8) | buff1[1])>>2
+                y = ((buff1[2] << 8) | buff1[3])>>2
+                z = ((buff1[4] << 8) | buff1[5])>>2
 
-                if(x > 0x1FFF)  x -= 0x3FFF;
-                if(y > 0x1FFF)  y -= 0x3FFF;
-                if(z > 0x1FFF)  z -= 0x3FFF;
+                if(x > 0x1FFF)  x -= 0x3FFF
+                if(y > 0x1FFF)  y -= 0x3FFF
+                if(z > 0x1FFF)  z -= 0x3FFF
 
-                capteur.ax = x*MAG_SENSITIVITY;  
-                capteur.ay = y*MAG_SENSITIVITY;  
-                capteur.az = z*MAG_SENSITIVITY; 
+                capteur.ax = x*MAG_SENSITIVITY
+                capteur.ay = y*MAG_SENSITIVITY
+                capteur.az = z*MAG_SENSITIVITY
 
    //***************** MAGNETOMETRE *******************
                 
-                x = ((buff1[6]  << 8) | buff1[7]);
-                y = ((buff1[8]  << 8) | buff1[9]);
-                z = ((buff1[10] << 8) | buff1[11]);
+                x = ((buff1[6]  << 8) | buff1[7])
+                y = ((buff1[8]  << 8) | buff1[9])
+                z = ((buff1[10] << 8) | buff1[11])
 
-                if(x > 0x7FFF)  x -= 0xFFFF;
-                if(y > 0x7FFF)  y -= 0xFFFF;
-                if(z > 0x7FFF)  z -= 0xFFFF;
+                if(x > 0x7FFF)  x -= 0xFFFF
+                if(y > 0x7FFF)  y -= 0xFFFF
+                if(z > 0x7FFF)  z -= 0xFFFF
                 
-                capteur.mx = x;
-                capteur.my = y;
-                capteur.mz = z;
+                capteur.mx = x
+                capteur.my = y
+                capteur.mz = z
                 
    //******************* GYRO ******************
             
-                x = ((buff2[0] << 8) | buff2[1]);
-                y = ((buff2[2] << 8) | buff2[3]);
-                z = ((buff2[4] << 8) | buff2[5]);
+                x = ((buff2[0] << 8) | buff2[1])
+                y = ((buff2[2] << 8) | buff2[3])
+                z = ((buff2[4] << 8) | buff2[5])
 
-                if(x > 0x3FFF)  x -= 0xFFFF;
-                if(y > 0x3FFF)  y -= 0xFFFF;
-                if(z > 0x3FFF)  z -= 0xFFFF;
+                if(x > 0x3FFF)  x -= 0xFFFF
+                if(y > 0x3FFF)  y -= 0xFFFF
+                if(z > 0x3FFF)  z -= 0xFFFF
                 
-                capteur.gx = x*GYRO_SENSITIVITY; 
-                capteur.gy = y*GYRO_SENSITIVITY;
-                capteur.gz = z*GYRO_SENSITIVITY;
-
+                capteur.gx = x*GYRO_SENSITIVITY
+                capteur.gy = y*GYRO_SENSITIVITY
+                capteur.gz = z*GYRO_SENSITIVITY
     			}
     	)
     	}

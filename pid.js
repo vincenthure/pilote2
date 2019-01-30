@@ -15,6 +15,14 @@ module.exports = function()
 	if (typeof Ki === "undefined")  Ki=KI_INIT
 	if (typeof Kd === "undefined")  Kd=KD_INIT
 
+    const raspi = require('raspi')
+    const pwm   = require('raspi-pwm');
+    const gpio  = require('raspi-gpio')
+
+    raspi.init(function(){ })
+    const pwm18     = new pwm.PWM('P1-12')
+    const gpio17    = new gpio.DigitalOutput('P1-11');
+
     var Vp,
 		Vi=0,
 		Vd,
@@ -29,13 +37,17 @@ module.exports = function()
         Vd      = Vp - last_Vp
         last_Vp = Vp
 
-        out  = ((Kp*Vp) + (Ki*Vi) + (Kd*Vd))/10
-        out  = Math.min(out,100)
-        out  = Math.max(out,-100)
+        out  = (Kp*Vp) + (Ki*Vi) + (Kd*Vd)
+        var reverse = (out>0)?1:0
+        var val = Math.min(Math.abs(out/1000),1)
+ 
+        if (!isNaN(val)) 
+            {
+            pwm18.write(val)
+            gpio17.write(reverse)
+            } 
 
-        //pwm     = Math.abs(output)
-        //reverse = (output>0)?true:false
-        return out
+        return (reverse?val:val*-1)
        	}
 
     this.get = function()
