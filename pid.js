@@ -47,7 +47,7 @@ module.exports = function()
             gpio17.write(reverse)
             } 
 
-        return (reverse?val:val*-1)
+        return (reverse?val:-val)
        	}
 
     this.get = function()

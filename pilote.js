@@ -168,6 +168,10 @@ module.exports = function()
                                         exeCute("sudo reboot")
                                         break
 
+                case 'service'     :    console.log("service")
+                                        exeCute("sudo systemctl restart pilote.service")
+                                        break
+
                 case 'gyroSave'    :    calibration.gyroSave(capt)
                                         break
                 }

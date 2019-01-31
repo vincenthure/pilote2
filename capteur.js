@@ -1,15 +1,5 @@
 module.exports = function()
     {
-    this.ax = 0
-    this.ay = 0
-    this.az = 0
-    this.mx = 0
-    this.my = 0
-    this.mz = 0
-    this.gx = 10
-    this.gy = 0
-    this.gz = 0
-
     const async   = require("async")
     const i2c     = require("i2c-bus")
 

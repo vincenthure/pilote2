@@ -1,28 +1,39 @@
 # pilote2
 
-sudo apt-get install git
-sudo apt-get install libudev-dev
+Installer raspbian lite sur carte Sd
+configurer le RPI en mode console acec sudo raspi-config
 
-# instalation nodejs
 
-curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-sudo apt install -y nodejs
+hostname :  pilote
+password :  admin
+SSH : on
+reboot : console login as pi
+Location, clavier...
+Wifi
 
-# ouvrir nodejs sans sudo
+Se connecter par un autre ordi en mode console
+ssh pi@remote.local
 
-sudo apt-get install libcap2-bin
-sudo setcap cap_net_raw+eip $(eval readlink -f `which node`)
+login pi
 
-# recuparation du programme pilote et des modules nodejs
+password admin
 
-git clone https://github.com/vincenthure/pilote1.git
-cd ~/pilote1
-npm install
+exectuter les commandes contenu dans le fichier configuration/intall.sh
 
-# installation et gestion du service pilote
 
-cd configuration
-sudo cp pilote.service /etc/systemd/system
-sudo systemctl enable pilote.service   
 
-sudo reboot
+gestion du service
+
+fichier /etc/systemd/system/pilote.service
+
+sudo systemctl start pilote.service
+
+sudo systemctl enable pilote.service
+
+sudo systemctl restart pilote.service
+
+sudo systemctl stop pilote.service
+
+sudo systemctl status pilote.service
+
+journalctl -u pilote.service
