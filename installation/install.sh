@@ -1,6 +1,7 @@
 # pilote2
 
 sudo apt-get install git
+sudo apt-get update
 sudo apt-get install libudev-dev
 
 # instalation nodejs
@@ -10,13 +11,13 @@ sudo apt install -y nodejs
 
 # ouvrir nodejs sans sudo
 
-sudo apt-get install libcap2-bin
-sudo setcap cap_net_raw+eip $(eval readlink -f `which node`)
+#sudo apt-get install libcap2-bin
+#sudo setcap cap_net_raw+eip $(eval readlink -f `which node`)
 
 # recuparation du programme pilote et des modules nodejs
 
-git clone https://github.com/vincenthure/pilote1.git
-cd ~/pilote1
+git clone https://github.com/vincenthure/pilote2.git
+cd ~/pilote2
 npm install
 
 # installation et gestion du service pilote

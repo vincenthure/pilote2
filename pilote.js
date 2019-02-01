@@ -22,8 +22,8 @@ module.exports = function()
         ki: 0
         });
 
-    const PID = require('./pid')
-    const pid = new PID()
+    const Controller = require('./pid')
+    const pid        = new Controller(LOOP_TIME)
 
     const capt=   
         {
@@ -122,22 +122,22 @@ module.exports = function()
         var fnc = Buffer.from(value).toString();
         switch (fnc)
                 {
-                case "kp-"         :    pid.kp(-1)
+                case "kp-"         :    pid.set_kp(-1)
                                         break;
                                 
-                case "kp+"         :    pid.kp(1)
+                case "kp+"         :    pid.set_kp(1)
                                         break;
  
-                case "ki-"         :    pid.ki(-1)
+                case "ki-"         :    pid.set_ki(-1)
                                         break;
                                 
-                case "ki+"         :    pid.ki(1)
+                case "ki+"         :    pid.set_ki(1)
                                         break;
                                 
-                case "kd-"         :    pid.kd(-1)
+                case "kd-"         :    pid.set_kd(-1)
                                         break;
                                 
-                case "kd+"         :    pid.kd(1)
+                case "kd+"         :    pid.set_kd(1)
                                         break;
                 
                 case "cap--"       :    console.log("cap -1");

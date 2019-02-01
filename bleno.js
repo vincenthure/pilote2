@@ -154,23 +154,19 @@ util.inherits(piloteServices, BlenoPrimaryService);
 
 //*************** Advertise Service ***************************************************
 
-setInterval( initBluetooth, 1000 )
 
-function initBluetooth()
+bleno.on('stateChange', function(state)
 	{
-	bleno.on('stateChange', function(state)
+	if(state === 'poweredOn')
 		{
-		if(state === 'poweredOn')
-			{
-			console.log("powered On");
-			bleno.startAdvertising('CAP',[SERVICE_UUID]);	
-			}
-		else
-			{
-			bleno.stopAdvertising();
-			}	
-		})
-	}
+		console.log("powered On");
+		bleno.startAdvertising('CAP',[SERVICE_UUID]);	
+		}
+	else
+		{
+		bleno.stopAdvertising();
+		}	
+	})
 
 //**************** Add Service ******************************************************
 
