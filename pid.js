@@ -23,7 +23,7 @@ class Controller
         this.sumError  = 0
         this.lastError = 0
         this.lastTime  = 0
-        this.i_max     = 50
+        this.i_max     = 15
         this.cap       = 0
         this.error     = 0
         this.output    = 0
@@ -51,7 +51,7 @@ class Controller
 
     set_cap_to_heading(heading)
         {
-        this.cap = heading
+        this.cap = heading * -57.29577951308233
         if(this.cap<0)    this.cap +=360
         if(this.cap>359)  this.cap -=360
         }
@@ -68,22 +68,28 @@ class Controller
 
     update(heading)
         {
+        heading *= -57.29577951308233
         if(heading<0)    heading +=360
 
         this.error = heading - this.cap
         if( this.error >  180 ) this.error -= 360
         if( this.error < -180 ) this.error += 360
-          
-        this.sumError = this.sumError + (this.error*this.dt)
-        if (Math.abs(this.sumError) > this.i_max) 
+         
+        let vp =  this.kp * this.error
+
+        this.sumError = this.sumError + this.error*this.dt
+        if ( Math.abs(this.sumError) > this.i_max) 
             {
             let sumSign = (this.sumError > 0) ? 1 : -1;
             this.sumError = sumSign * this.i_max;
             }
+        let vi = this.ki * this.sumError 
+
         let dError = (this.error - this.lastError)/this.dt
         this.lastError = this.error
+        let vd =  this.kd * dError
 
-        this.output = ((this.kp * this.error) + (this.ki * this.sumError) + (this.kd * dError))/500
+        this.output = (vp+vi+vd)/200
         let reverse = (this.output>0)?1:0
         let val = Math.min(Math.abs(this.output),1)
 

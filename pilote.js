@@ -39,7 +39,7 @@ module.exports = function()
         gx : 0, gy : 0, gz : 0
         }
 
-    var heading
+    const PI180 = 57.29577951308233
 
 //*********** Boucle **********************************
 
@@ -54,15 +54,12 @@ module.exports = function()
                     calib.mx, calib.my, calib.mz
                     )
 
-        heading = ahrs.getEulerAngles().heading*-57.29;
-
-        pid.update(heading)
-
+        pid.update(ahrs.getEulerAngles().heading)
         },LOOP_TIME );
 
 //************ initialise le cap au bout de 3 secondes ***************
 
-    setTimeout(function(){ pid.set_cap_to_heading(heading) }, 3000)
+    setTimeout(function(){ pid.set_cap_to_heading(ahrs.getEulerAngles().heading) }, 3000)
 
 //***************** fonction ***************************
 
@@ -143,7 +140,7 @@ module.exports = function()
                                         break;
  
                 case "capset"      :    console.log("cap to heading");
-                                        pid.set_cap_to_heading(heading)
+                                        pid.set_cap_to_heading(ahrs.getEulerAngles().heading)
                                         break;
                                 
                 case "cap+"        :    console.log("cap +1");
