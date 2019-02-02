@@ -39,8 +39,7 @@ module.exports = function()
         gx : 0, gy : 0, gz : 0
         }
 
-    var heading, cap=0
-    var input, output
+    var heading
 
 //*********** Boucle **********************************
 
@@ -57,26 +56,21 @@ module.exports = function()
 
         heading = ahrs.getEulerAngles().heading*-57.29;
 
-        if( heading<180 && cap<180 )   input = heading-cap;
-        if( heading>180 && cap>180 )   input = heading-cap;
-        if( heading<180 && cap>180 )   input = heading-cap-360;
-        if( heading>180 && cap<180 )   input = 360-cap+heading;
-
-        output = pid.update(input)
+        pid.update(heading)
 
         },LOOP_TIME );
 
 //************ initialise le cap au bout de 3 secondes ***************
 
-    setTimeout(function(){ cap = heading; }, 3000)
+    setTimeout(function(){ pid.set_cap_to_heading(heading) }, 3000)
 
 //***************** fonction ***************************
 
     this.Data = function()
         {
         const buf = Buffer.allocUnsafe(8);
-        buf.writeFloatBE(input, 0);
-        buf.writeFloatBE(output, 4);
+        buf.writeFloatBE(pid.get_error(), 0);
+        buf.writeFloatBE(pid.get_output(), 4);
         return buf;
         }
 
@@ -98,13 +92,13 @@ module.exports = function()
     this.CapGet = function()
         {
         const buf = Buffer.allocUnsafe(4);
-        buf.writeFloatBE(cap, 0);
+        buf.writeFloatBE(pid.get_cap(), 0);
         return buf;
         }
      
     this.Pid = function()
         {
-        return pid.get()
+        return pid.get_Kpid()
         }
                 
     this.Calibration = function()
@@ -140,24 +134,24 @@ module.exports = function()
                 case "kd+"         :    pid.set_kd(1)
                                         break;
                 
-                case "cap--"       :    console.log("cap -1");
-                                        cap -= 10;
+                case "cap--"       :    console.log("cap -10");
+                                        pid.set_cap(-10)
                                         break;
                                 
                 case "cap-"        :    console.log("cap +1");
-                                        cap -= 1;
+                                        pid.set_cap(-1)
                                         break;
  
                 case "capset"      :    console.log("cap to heading");
-                                        cap = heading;
+                                        pid.set_cap_to_heading(heading)
                                         break;
                                 
                 case "cap+"        :    console.log("cap +1");
-                                        cap += 1;
+                                        pid.set_cap(1)
                                         break;
                                 
                 case "cap++"       :    console.log("cap +10");
-                                        cap += 10;
+                                        pid.set_cap(10)
                                         break;
                 
                 case 'shutdown'    :    console.log("shutdown")

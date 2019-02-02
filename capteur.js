@@ -21,25 +21,25 @@ module.exports = function()
     const DATA              = 1
 
     const i2c1  = i2c.openSync(1)
-   	const buff1 = new Buffer(12)
-   	const buff2 = new Buffer(6)
+    const buff1 = new Buffer(12)
+    const buff2 = new Buffer(6)
 
-	i2c1.writeByteSync(FXOS8700,   MAG_CTRL_REG1,    0x00);
-  	i2c1.writeByteSync(FXOS8700,   MAG_XYZ_DATA_CFG, 0x00);
-	i2c1.writeByteSync(FXOS8700,   MAG_CTRL_REG2,    0x02);
-	i2c1.writeByteSync(FXOS8700,   MAG_CTRL_REG1,    0x15);
-	i2c1.writeByteSync(FXOS8700,   MAG_MCTRL_REG1,   0x1F);
-	i2c1.writeByteSync(FXOS8700,   MAG_MCTRL_REG2,   0x20);
+    i2c1.writeByteSync(FXOS8700,   MAG_CTRL_REG1,    0x00);
+    i2c1.writeByteSync(FXOS8700,   MAG_XYZ_DATA_CFG, 0x00);
+    i2c1.writeByteSync(FXOS8700,   MAG_CTRL_REG2,    0x02);
+    i2c1.writeByteSync(FXOS8700,   MAG_CTRL_REG1,    0x15);
+    i2c1.writeByteSync(FXOS8700,   MAG_MCTRL_REG1,   0x1F);
+    i2c1.writeByteSync(FXOS8700,   MAG_MCTRL_REG2,   0x20);
 
-	i2c1.writeByteSync(FXAS210002, GYRO_REG1,    0x00);
-	i2c1.writeByteSync(FXAS210002, GYRO_REG0,    0x02);
-	i2c1.writeByteSync(FXAS210002, GYRO_REG1,    0x0E);
+    i2c1.writeByteSync(FXAS210002, GYRO_REG1,    0x00);
+    i2c1.writeByteSync(FXAS210002, GYRO_REG0,    0x02);
+    i2c1.writeByteSync(FXAS210002, GYRO_REG1,    0x0E);
 
     this.get = function(capteur)
-    	{
-    	var x,y,z;
+        {
+        var x,y,z;
 
-    	async.parallel
+        async.parallel
             (
             [
             function(cb) { i2c1.readI2cBlock(FXOS8700,   DATA, 12, buff1, cb); },
@@ -90,7 +90,7 @@ module.exports = function()
                 capteur.gx = x*GYRO_SENSITIVITY
                 capteur.gy = y*GYRO_SENSITIVITY
                 capteur.gz = z*GYRO_SENSITIVITY
-    			}
-    	)
-    	}
+                }
+        )
+        }
     }

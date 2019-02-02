@@ -23,7 +23,10 @@ class Controller
         this.sumError  = 0
         this.lastError = 0
         this.lastTime  = 0
-        this.i_max     = 20
+        this.i_max     = 50
+        this.cap       = 0
+        this.error     = 0
+        this.output    = 0
 
         const raspi = require('raspi')
         const pwm   = require('raspi-pwm');
@@ -34,31 +37,64 @@ class Controller
         this.gpio17 = new gpio.DigitalOutput('P1-11');
         }
 
-    update(error)
+    set_cap(val)
         {
-        this.sumError = this.sumError + (error*this.dt)
+        this.cap += val
+        if(this.cap<0)    this.cap +=360
+        if(this.cap>359)  this.cap -=360
+        }
+
+    get_cap(val)
+        {        
+        return(this.cap)
+        }
+
+    set_cap_to_heading(heading)
+        {
+        this.cap = heading
+        if(this.cap<0)    this.cap +=360
+        if(this.cap>359)  this.cap -=360
+        }
+
+    get_error()
+        {
+        return(this.error)    
+        }
+
+    get_output()
+        {
+        return(this.output)    
+        }
+
+    update(heading)
+        {
+        if(heading<0)    heading +=360
+
+        this.error = heading - this.cap
+        if( this.error >  180 ) this.error -= 360
+        if( this.error < -180 ) this.error += 360
+          
+        this.sumError = this.sumError + (this.error*this.dt)
         if (Math.abs(this.sumError) > this.i_max) 
             {
             let sumSign = (this.sumError > 0) ? 1 : -1;
             this.sumError = sumSign * this.i_max;
             }
-        let dError = (error - this.lastError)/this.dt
-        this.lastError = error
+        let dError = (this.error - this.lastError)/this.dt
+        this.lastError = this.error
 
-        let output = (this.kp*error) + (this.ki * this.sumError) + (this.kd * dError)
-        let reverse = (output>0)?1:0
-        let val = Math.min(Math.abs(output/500),1)
+        this.output = ((this.kp * this.error) + (this.ki * this.sumError) + (this.kd * dError))/500
+        let reverse = (this.output>0)?1:0
+        let val = Math.min(Math.abs(this.output),1)
 
         if (!isNaN(val)) 
             {
             this.pwm18.write(val)
             this.gpio17.write(reverse)
             } 
-
-        return (reverse?val:-val)
        	} 
 
-    get()
+    get_Kpid()
     	{
     	const buf = Buffer.allocUnsafe(12);
         buf.writeFloatBE(this.kp, 0);
@@ -69,24 +105,27 @@ class Controller
 
     set_kp(x)
     	{
-    	console.log("Kp "+this.kp)
-        this.kp += x 
+        this.kp += x
+        if(this.kp<0) this.kp=0
         this.store.set('kp',this.kp)
+        console.log("Kp "+this.kp)
     	}
 
     set_ki(x)
     	{
-    	console.log("Ki "+x)
         this.ki += x 
+        if(this.ki<0) this.ki=0
         this.store.set('ki',this.ki)
+        console.log("Ki "+x)
     	}
 
     set_kd(x)
     	{
-    	console.log("Kd "+x)
         this.kd += x 
+        if(this.kd<0) this.kd=0
         this.store.set('kd',this.kd)
-    	}
+        console.log("Kd "+x)
+     	}
     }
 
 module.exports = Controller;
