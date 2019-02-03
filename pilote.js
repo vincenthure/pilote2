@@ -3,7 +3,7 @@ module.exports = function()
     const LOOP_TIME = 20
     const SMOOTH    = 0.1
 
-    console.log("starting IMU")
+    console.log("starting IMU2")
 
     const exeCute = require('exe')
 
@@ -17,8 +17,7 @@ module.exports = function()
     const ahrs = new AHRS
         ({
         sampleInterval: LOOP_TIME,
-        algorithm: 'Madgwick',
-        beta: 0.4,
+        algorithm: 'Mahony',
         kp: 0.5,
         ki: 0
         });
@@ -42,10 +41,6 @@ module.exports = function()
 
     const PI180 = -57.29577951308233
 
-    const LPF     = require("lpf")
-    LPF.smoothing = SMOOTH;
-    LPF.init([0,0,0,0,0,0,0,0,0,0]);
-
     var heading;
 
 //*********** Boucle **********************************
@@ -60,7 +55,7 @@ module.exports = function()
                     calib.ax, calib.ay, calib.az,
                     calib.mx, calib.my, calib.mz
                     )
-        heading = LPF.next(ahrs.getEulerAngles().heading) * PI180
+        heading = ahrs.getEulerAngles().heading * PI180
         pid.update(heading)
         },LOOP_TIME );
 
