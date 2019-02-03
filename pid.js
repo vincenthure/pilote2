@@ -51,7 +51,7 @@ class Controller
 
     set_cap_to_heading(heading)
         {
-        this.cap = heading * -57.29577951308233
+        this.cap = heading
         if(this.cap<0)    this.cap +=360
         if(this.cap>359)  this.cap -=360
         }
@@ -68,7 +68,6 @@ class Controller
 
     update(heading)
         {
-        heading *= -57.29577951308233
         if(heading<0)    heading +=360
 
         this.error = heading - this.cap

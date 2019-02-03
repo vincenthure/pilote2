@@ -1,10 +1,11 @@
 module.exports = function()
     {
+    const LOOP_TIME = 20
+    const SMOOTH    = 0.1
+
     console.log("starting IMU")
 
     const exeCute = require('exe')
-
-    const LOOP_TIME = 20
 
     const CAPTEUR = require('./capteur')
     const capteur = new CAPTEUR()
@@ -39,7 +40,13 @@ module.exports = function()
         gx : 0, gy : 0, gz : 0
         }
 
-    const PI180 = 57.29577951308233
+    const PI180 = -57.29577951308233
+
+    const LPF     = require("lpf")
+    LPF.smoothing = SMOOTH;
+    LPF.init([0,0,0,0,0,0,0,0,0,0]);
+
+    var heading;
 
 //*********** Boucle **********************************
 
@@ -53,13 +60,13 @@ module.exports = function()
                     calib.ax, calib.ay, calib.az,
                     calib.mx, calib.my, calib.mz
                     )
-
-        pid.update(ahrs.getEulerAngles().heading)
+        heading = LPF.next(ahrs.getEulerAngles().heading) * PI180
+        pid.update(heading)
         },LOOP_TIME );
 
 //************ initialise le cap au bout de 3 secondes ***************
 
-    setTimeout(function(){ pid.set_cap_to_heading(ahrs.getEulerAngles().heading) }, 3000)
+    setTimeout(function(){ pid.set_cap_to_heading(heading) }, 3000)
 
 //***************** fonction ***************************
 
@@ -140,7 +147,7 @@ module.exports = function()
                                         break;
  
                 case "capset"      :    console.log("cap to heading");
-                                        pid.set_cap_to_heading(ahrs.getEulerAngles().heading)
+                                        pid.set_cap_to_heading(heading)
                                         break;
                                 
                 case "cap+"        :    console.log("cap +1");
