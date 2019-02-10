@@ -24,12 +24,13 @@ module.exports = function()
 
     const Controller = require('./pid')
     const pid        = new Controller(LOOP_TIME)
+    var capteur    = {}
 
 //*********** Boucle **********************************
 
     var timerID = setInterval(function()
         {
-        let capteur = calibration.update(Capteur.get())
+        capteur = calibration.update(Capteur.get())
 
         ahrs.update(capteur.gx, capteur.gy, capteur.gz,
                     capteur.ax, capteur.ay, capteur.az,
