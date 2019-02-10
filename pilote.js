@@ -1,44 +1,24 @@
 module.exports = function()
     {
-    const LOOP_TIME = 20
+	const LOOP_COMPAS = 20
+    const LOOP_PID    = 200
  
     console.log("starting pilote")
 
     const exeCute = require('exe')
 
-    const CAPTEUR = require('./capteur')
-    const Capteur = new CAPTEUR()
-
-    const CALIBRATION = require('./calibration')
-    const calibration = new CALIBRATION()
-
-    const AHRS = require('ahrs')
-    const ahrs = new AHRS
-        ({
-        sampleInterval: LOOP_TIME,
-        algorithm: 'Mahony',   //  'Madgwick',
- //     beta: 0.4,
-        kp: 0.5,
-        ki: 0
-        });
+    const COMPAS = require('./compas/compas')
+    const compas = new COMPAS(LOOP_COMPAS)
 
     const Controller = require('./pid')
-    const pid        = new Controller(LOOP_TIME)
-    var capteur    = {}
+    const pid        = new Controller(LOOP_PID)
 
 //*********** Boucle **********************************
 
     var timerID = setInterval(function()
         {
-        capteur = calibration.update(Capteur.get())
-
-        ahrs.update(capteur.gx, capteur.gy, capteur.gz,
-                    capteur.ax, capteur.ay, capteur.az,
-                    capteur.mx, capteur.my, capteur.mz
-                    )
- 
-        pid.update(ahrs.getEulerAngles().heading)
-        },LOOP_TIME );
+        pid.update(compas.get_heading())
+        },LOOP_PID );
 
 //************ initialise le cap au bout de 3 secondes ***************
 
@@ -64,23 +44,25 @@ module.exports = function()
 
     this.Capteur = function()
         {
-        const buf = Buffer.allocUnsafe(36);
-        buf.writeFloatBE(capteur.ax, 0);
-        buf.writeFloatBE(capteur.ay, 4);
-        buf.writeFloatBE(capteur.az, 8);
-        buf.writeFloatBE(capteur.mx,12);
-        buf.writeFloatBE(capteur.my,16);
-        buf.writeFloatBE(capteur.mz,20);
-        buf.writeFloatBE(capteur.gx,24);
-        buf.writeFloatBE(capteur.gy,28);
-        buf.writeFloatBE(capteur.gz,32);
+		let capteur = compas.get_capteur()
+		
+        const buf = Buffer.allocUnsafe(36)
+        buf.writeFloatBE(capteur.ax, 0)
+        buf.writeFloatBE(capteur.ay, 4)
+        buf.writeFloatBE(capteur.az, 8)
+        buf.writeFloatBE(capteur.mx,12)
+        buf.writeFloatBE(capteur.my,16)
+        buf.writeFloatBE(capteur.mz,20)
+        buf.writeFloatBE(capteur.gx,24)
+        buf.writeFloatBE(capteur.gy,28)
+        buf.writeFloatBE(capteur.gz,32)
         return buf;
         }
 
     this.CapGet = function()
         {
-        const buf = Buffer.allocUnsafe(4);
-        buf.writeFloatBE(pid.get_cap(), 0);
+        const buf = Buffer.allocUnsafe(4)
+        buf.writeFloatBE(pid.get_cap(), 0)
         return buf;
         }
      
@@ -91,12 +73,12 @@ module.exports = function()
                 
     this.Calibration = function()
         {
-        return calibration.get()
+        return compas.get_calibration()
         }
 
     this.magnetoSave = function(buf)
         {
-        calibration.magnetoSave(buf)
+        compas.magnetoSave(buf)
         }
 
     this.commande = function(value)
@@ -158,7 +140,7 @@ module.exports = function()
                                         exeCute("sudo systemctl restart pilote.service")
                                         break
 
-                case 'gyroSave'    :    calibration.gyroSave(capteur)
+                case 'gyroSave'    :    compas.gyroSave()
                                         break
                 }
         }      

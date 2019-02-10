@@ -84,8 +84,6 @@ class Controller
 
     update(heading)
         {
-		heading *= -57.29577951308233
-        if(heading<0)    heading +=360
 		this.heading = heading
 		
         this.error = this.heading - this.cap
@@ -112,7 +110,6 @@ class Controller
 
         if(this.stanby == false)
 			{
-				console.log("send")
 			if (!isNaN(val)) 
 				{
 				this.pwm18.write(val)
