@@ -25,6 +25,7 @@ class Controller
         this.lastTime  = 0
         this.i_max     = 15
         this.cap       = 0
+        this.heading   = 0
         this.error     = 0
         this.output    = 0
 
@@ -49,11 +50,14 @@ class Controller
         return(this.cap)
         }
 
-    set_cap_to_heading(heading)
+	get_heading(val)
+        {        
+        return(this.heading)
+        }
+
+   set_cap_to_heading(heading)
         {
-        this.cap = heading
-        if(this.cap<0)    this.cap +=360
-        if(this.cap>359)  this.cap -=360
+        this.cap = this.heading
         }
 
     get_error()
@@ -68,9 +72,11 @@ class Controller
 
     update(heading)
         {
+		heading *= -57.29577951308233
         if(heading<0)    heading +=360
-
-        this.error = heading - this.cap
+		this.heading = heading
+		
+        this.error = this.heading - this.cap
         if( this.error >  180 ) this.error -= 360
         if( this.error < -180 ) this.error += 360
          

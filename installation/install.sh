@@ -24,6 +24,11 @@ npm install
 
 cd ~/pilote2/installation
 sudo cp pilote.service /etc/systemd/system
-sudo systemctl enable pilote.service   
+sudo systemctl enable pilote.service  
+
+# installation du wifi
+
+cd ~/pilote2/installation
+sudo cp wpa_supplicant.conf /etc/wpa_supplicant/
 
 sudo reboot

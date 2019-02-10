@@ -17,17 +17,20 @@ module.exports = function()
 	if (typeof myo === "undefined") myo=0
 	if (typeof mzo === "undefined") mzo=0
 
-	this.adjust = function(capteur,calib)
+	this.update = function(capteur)
 		{
-        calib.ax = capteur.ax
-        calib.ay = capteur.ay
-        calib.az = capteur.az
-        calib.mx = capteur.mx - mxo
-        calib.my = capteur.my - myo
-        calib.mz = capteur.mz - mzo
-        calib.gx = capteur.gx - gxo
-        calib.gy = capteur.gy - gyo
-        calib.gz = capteur.gz - gzo
+		var val = { }
+
+        val.ax = capteur.ax
+        val.ay = capteur.ay
+        val.az = capteur.az
+        val.mx = capteur.mx - mxo
+        val.my = capteur.my - myo
+        val.mz = capteur.mz - mzo
+        val.gx = capteur.gx - gxo
+        val.gy = capteur.gy - gyo
+        val.gz = capteur.gz - gzo
+        return val
 		}
 
 	this.magnetoSave = function(buf)
