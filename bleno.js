@@ -5,6 +5,7 @@ const PID_UUID         = 'ff19'
 const CAPTEUR_UUID     = 'ff20'
 const CALIBRATION_UUID = 'ff21'
 const COMMANDE_UUID    = 'ff22'
+const STANBY_UUID      = 'ff23'
 
 var bleno   = require('bleno')
 var util    = require('util')
@@ -49,6 +50,24 @@ util.inherits(Data, BlenoCharacteristic);
 Data.prototype.onReadRequest = function(offset, callback) 
 	{
     callback(this.RESULT_SUCCESS, new Buffer(Pilote.Data()));
+    };
+
+//********************* stanby *******************************************************
+
+var Stanby = function() 
+	{
+	Data.super_.call(this, 
+		{
+		uuid: STANBY_UUID,
+		properties: ['read']
+		});
+	};
+	
+util.inherits(Stanby, BlenoCharacteristic);
+
+Stanby.prototype.onReadRequest = function(offset, callback) 
+	{
+    callback(this.RESULT_SUCCESS, new Buffer(Pilote.Stanby()));
     };
 
 //********************* capteur *******************************************************
@@ -145,7 +164,8 @@ function piloteServices()
 							new Pid(),
 							new Capteur(),
 							new Calibration(),
-							new Commande()
+							new Commande(),
+							new Stanby()
 							]
 		});
 	}

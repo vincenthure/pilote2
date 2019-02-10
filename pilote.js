@@ -25,24 +25,15 @@ module.exports = function()
     const Controller = require('./pid')
     const pid        = new Controller(LOOP_TIME)
 
-    const capteur=   
-        {
-        gx : 0, gy : 0, gz : 0,
-        ax : 0, ay : 0, az : 0,
-        gx : 0, gy : 0, gz : 0
-        }
-
 //*********** Boucle **********************************
 
     var timerID = setInterval(function()
         {
-        Capteur.get(capteur)
+        let capteur = calibration.update(Capteur.get())
 
-        let val = calibration.update(capteur)
-
-        ahrs.update(val.gx, val.gy, val.gz,
-                    val.ax, val.ay, val.az,
-                    val.mx, val.my, val.mz
+        ahrs.update(capteur.gx, capteur.gy, capteur.gz,
+                    capteur.ax, capteur.ay, capteur.az,
+                    capteur.mx, capteur.my, capteur.mz
                     )
  
         pid.update(ahrs.getEulerAngles().heading)
@@ -62,6 +53,13 @@ module.exports = function()
         buf.writeFloatBE(pid.get_heading(), 8);
         return buf;
         }
+        
+    this.Stanby = function()
+       {
+        const buf = Buffer.allocUnsafe(1);
+        buf.writeUInt8(pid.get_stanby(), 0);
+        return buf;
+        }		
 
     this.Capteur = function()
         {
@@ -141,6 +139,10 @@ module.exports = function()
                                 
                 case "cap++"       :    console.log("cap +10");
                                         pid.set_cap(10)
+                                        break;
+                
+                case "stanby"      :    console.log("stanby");
+                                        pid.change_stanby()
                                         break;
                 
                 case 'shutdown'    :    console.log("shutdown")

@@ -34,11 +34,16 @@ module.exports = function()
     i2c1.writeByteSync(FXAS210002, GYRO_REG1,    0x00);
     i2c1.writeByteSync(FXAS210002, GYRO_REG0,    0x02);
     i2c1.writeByteSync(FXAS210002, GYRO_REG1,    0x0E);
-
-    this.get = function(capteur)
+    
+	const capteur=   
         {
-        var x,y,z;
-
+        gx : 0, gy : 0, gz : 0,
+        ax : 0, ay : 0, az : 0,
+        gx : 0, gy : 0, gz : 0
+        }
+ 
+    this.get = function()
+        {
         async.parallel
             (
             [
@@ -48,7 +53,8 @@ module.exports = function()
 
             function(err, results) 
                 {
-
+				var x,y,z
+				
    //****************  ACCELEROMETRE *****************
 
                 x = ((buff1[0] << 8) | buff1[1])>>2
@@ -91,6 +97,7 @@ module.exports = function()
                 capteur.gy = y*GYRO_SENSITIVITY
                 capteur.gz = z*GYRO_SENSITIVITY
                 }
-        )
+			)
+        return capteur
         }
     }

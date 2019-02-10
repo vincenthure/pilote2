@@ -28,15 +28,27 @@ class Controller
         this.heading   = 0
         this.error     = 0
         this.output    = 0
+        this.stanby    = false
 
         const raspi = require('raspi')
         const pwm   = require('raspi-pwm');
         const gpio  = require('raspi-gpio')
 
         raspi.init(function(){ })
-        this.pwm18  = new pwm.PWM('P1-12')
-        this.gpio17 = new gpio.DigitalOutput('P1-11');
+        this.pwm18  = new pwm.PWM('P1-12')     // pin18 pwm
+        this.gpio17 = new gpio.DigitalOutput('P1-11'); // pin 17 fonction reverse
         }
+        
+    change_stanby()
+        {        
+        this.stanby = !this.stanby
+        console.log(this.stanby)
+        }   
+
+    get_stanby(val)
+        {        
+        return(this.stanby)
+        }   
 
     set_cap(val)
         {
@@ -98,10 +110,13 @@ class Controller
         let reverse = (this.output>0)?1:0
         let val = Math.min(Math.abs(this.output),1)
 
-        if (!isNaN(val)) 
-            {
-            this.pwm18.write(val)
-            this.gpio17.write(reverse)
+        if(this.stanby == false)
+			{
+			if (!isNaN(val)) 
+				{
+				this.pwm18.write(val)
+				this.gpio17.write(reverse)
+				} 
             } 
        	} 
 
