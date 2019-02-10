@@ -112,6 +112,7 @@ class Controller
 
         if(this.stanby == false)
 			{
+				console.log("send")
 			if (!isNaN(val)) 
 				{
 				this.pwm18.write(val)
