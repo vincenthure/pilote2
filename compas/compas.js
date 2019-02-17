@@ -1,6 +1,6 @@
-module.exports = function(val)
+module.exports = function(loop,smooth)
     {
-    const loop_time = val
+    const loop_time = loop
 
     const CAPTEUR = require('./capteur')
     const Capteur = new CAPTEUR()
@@ -12,10 +12,8 @@ module.exports = function(val)
     const ahrs = new AHRS
         ({
         sampleInterval: loop_time,
-        algorithm: 'Mahony',   //  'Madgwick',
- //     beta: 0.4,
-        kp: 0.5,
-        ki: 0
+        algorithm: 'Madgwick',
+        beta: smooth
         });
         
     var heading = 0;

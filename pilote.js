@@ -1,14 +1,15 @@
 module.exports = function()
     {
-	const LOOP_COMPAS = 20
-    const LOOP_PID    = 200
+	const LOOP_COMPAS   = 20
+	const SMOOTH_COMPAS = 0.08
+    const LOOP_PID      = 200
  
     console.log("starting pilote")
 
     const exeCute = require('exe')
 
     const COMPAS = require('./compas/compas')
-    const compas = new COMPAS(LOOP_COMPAS)
+    const compas = new COMPAS(LOOP_COMPAS, SMOOTH_COMPAS)
 
     const Controller = require('./pid')
     const pid        = new Controller(LOOP_PID)

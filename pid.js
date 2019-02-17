@@ -104,9 +104,9 @@ class Controller
         this.lastError = this.error
         let vd =  this.kd * dError
 
-        this.output = (vp+vi+vd)/200
+        this.output = vp+vi+vd
         let reverse = (this.output>0)?1:0
-        let val = Math.min(Math.abs(this.output),1)
+        let val = Math.min(Math.abs(this.output),100)/100
 
         if(this.stanby == false)
 			{
